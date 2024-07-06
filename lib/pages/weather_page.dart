@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:weather_app/models/weather_model.dart';
 import 'package:weather_app/services/weather_service.dart';
 
@@ -28,6 +30,23 @@ class _WeatherPageState extends State<WeatherPage> {
     }
   }
 
+  String getCondition(String? mainCondition) {
+    if (mainCondition == null) return "assets/Sunny.json";
+
+    switch (mainCondition.toLowerCase()) {
+      case "clouds":
+        return "assets/Clouds.json";
+      case "rain":
+        return "assets/Rain.json";
+      case "thunderstorm":
+        return "assets/Thunderstorm.json";
+      case "clear":
+        return "assets/Sunny.json";
+      default:
+        return "assets/Sunny.json";
+    }
+  }
+
   @override
   void initState() {
     _fetchWeather();
@@ -37,16 +56,42 @@ class _WeatherPageState extends State<WeatherPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            _weather?.cityName ?? "loading city...",
+      backgroundColor: Colors.grey,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Spacer(),
+              const Icon(
+                Icons.location_pin,
+                color: Colors.white70,
+              ),
+              Text(
+                _weather?.cityName.toUpperCase() ?? "loading city...",
+                style: GoogleFonts.anton(
+                  fontSize: 20.0,
+                  color: Colors.white70,
+                ),
+              ),
+              const Spacer(),
+              Lottie.asset(
+                getCondition(
+                  _weather!.mainCondition,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                "${_weather!.temperature.round()}°",
+                style: GoogleFonts.anton(
+                  color: Colors.grey[700],
+                  fontSize: 25.0,
+                ),
+              ),
+              const Spacer(),
+            ],
           ),
-          Text(
-            "${_weather!.temperature.round()}*C",
-          ),
-        ],
+        ),
       ),
     );
   }
